@@ -1,5 +1,5 @@
-apt install snapd
-snap install --classic certbot
+apt install snapd\
+snap install --classic certbot\
 ln -s /snap/bin/certbot /usr/bin/certbot
 
 ##################################
@@ -17,7 +17,7 @@ vi /lib/systemd/system/energizet-box.service
 	[Install]
 	WantedBy=multi-user.target
 
-systemctl start energizet-box.service
+systemctl start energizet-box.service\
 systemctl enable energizet-box.service
 
 vi /etc/nginx/conf.d/energizet-box.conf
@@ -73,7 +73,7 @@ vi /lib/systemd/system/energizet-history.service
 	[Install]
 	WantedBy=multi-user.target
 
-systemctl start energizet-history.service
+systemctl start energizet-history.service\
 systemctl enable energizet-history.service
 
 vi /etc/nginx/conf.d/energizet-history.conf
