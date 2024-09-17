@@ -1,10 +1,7 @@
-apt install snapd\
-snap install --classic certbot\
-ln -s /snap/bin/certbot /usr/bin/certbot
+Сохраняем в папку `/var/box` первый проект\
+Сохраняем в папку `/var/history` второй проект
 
-##################################
-
-vi /lib/systemd/system/energizet-box.service
+Создаём файл `/lib/systemd/system/energizet-box.service` и записываем в него настройку демона который захостит первый проект
 
 	[Unit]
 	Description=Energizet Box service
@@ -17,50 +14,12 @@ vi /lib/systemd/system/energizet-box.service
 	[Install]
 	WantedBy=multi-user.target
 
-systemctl start energizet-box.service\
-systemctl enable energizet-box.service
+Запускаем хостинг первого проекта
 
-vi /etc/nginx/conf.d/energizet-box.conf
+    systemctl start energizet-box.service
+    systemctl enable energizet-box.service
 
-	server {
-			server_name     box.energizet.ru;
-			location / {
-					proxy_pass      http://localhost:5001/;
-			}
-	}
-
-certbot --nginx
-
-	server {
-			server_name     box.energizet.ru;
-			location / {
-					proxy_pass      http://localhost:5001/;
-			}
-
-		listen 443 ssl; # managed by Certbot
-		ssl_certificate /etc/letsencrypt/live/box.energizet.ru/fullchain.pem; # managed by Certbot
-		ssl_certificate_key /etc/letsencrypt/live/box.energizet.ru/privkey.pem; # managed by Certbot
-		include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-		ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-	}
-	server {
-		if ($host = box.energizet.ru) {
-			return 301 https://$host$request_uri;
-		} # managed by Certbot
-
-
-			listen  80;
-			server_name     box.energizet.ru;
-		return 404; # managed by Certbot
-
-
-	}
-	
-
-###########################################################
-
-vi /lib/systemd/system/energizet-history.service
+Создаём файл `/lib/systemd/system/energizet-history.service` и записываем в него настройку демона который захостит второй проект
 
 	[Unit]
 	Description=Energizet History service
@@ -73,43 +32,45 @@ vi /lib/systemd/system/energizet-history.service
 	[Install]
 	WantedBy=multi-user.target
 
-systemctl start energizet-history.service\
-systemctl enable energizet-history.service
+Запускаем хостинг второго проекта
 
-vi /etc/nginx/conf.d/energizet-history.conf
+    systemctl start energizet-history.service
+    systemctl enable energizet-history.service
 
-	server {
-			server_name     history.energizet.ru;
-			location / {
-					proxy_pass      http://localhost:5002/;
-			}
-	}
-
-certbot --nginx
+Создаём файл `/etc/nginx/conf.d/energizet-box.conf` и в него записываем первоначальную настройку nginx для первого проекта
 
 	server {
-			server_name     history.energizet.ru;
-			location / {
-					proxy_pass      http://localhost:5002/;
-			}
-
-
-		listen 443 ssl; # managed by Certbot
-		ssl_certificate /etc/letsencrypt/live/history.energizet.ru/fullchain.pem; # managed by Certbot
-		ssl_certificate_key /etc/letsencrypt/live/history.energizet.ru/privkey.pem; # managed by Certbot
-		include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-		ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
+        server_name     box.energizet.ru;
+        location / {
+            proxy_pass      http://localhost:5001/;
+        }
 	}
+
+Создаём файл `/etc/nginx/conf.d/energizet-history.conf` и в него записываем первоначальную настройку nginx для второго проекта
+
 	server {
-		if ($host = history.energizet.ru) {
-			return 301 https://$host$request_uri;
-		} # managed by Certbot
-
-
-			server_name     history.energizet.ru;
-		listen 80;
-		return 404; # managed by Certbot
-
-
+        server_name     history.energizet.ru;
+        location / {
+            proxy_pass      http://localhost:5002/;
+        }
 	}
+
+Устанавливаем certbot
+
+    apt install snapd
+    snap install --classic certbot
+    ln -s /snap/bin/certbot /usr/bin/certbot
+
+Запускаем `certbot --nginx` и выбираем первый проект
+![img.png](img.png)
+
+В результате получим такой конфиг `/etc/nginx/conf.d/energizet-box.conf`
+![img_1.png](img_1.png)
+![img_3.png](img_3.png)
+
+Запускаем `certbot --nginx` и выбираем второй проект
+![img.png](img.png)
+
+В результате получим такой конфиг `/etc/nginx/conf.d/energizet-history.conf`
+![img_2.png](img_2.png)
+![img_4.png](img_4.png)
