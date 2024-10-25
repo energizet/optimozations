@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: energizet-box-service
+spec:
+  type: {{ .Values.energizetBox.service.type }}
+  ports:
+    - port: {{ .Values.energizetBox.service.port }}
+      targetPort: {{ .Values.energizetBox.service.port }}
+      nodePort: {{ .Values.energizetBox.service.nodePort }}
+  selector:
+    app: energizet-box

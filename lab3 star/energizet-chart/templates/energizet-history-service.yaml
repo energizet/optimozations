@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: energizet-history-service
+spec:
+  type: {{ .Values.energizetHistory.service.type }}
+  ports:
+    - port: {{ .Values.energizetHistory.service.port }}
+      targetPort: {{ .Values.energizetHistory.service.port }}
+      nodePort: {{ .Values.energizetHistory.service.nodePort }}
+  selector:
+    app: energizet-history

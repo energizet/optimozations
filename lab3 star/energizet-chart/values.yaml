@@ -1,0 +1,29 @@
+replicaCount: 1
+
+energizetBox:
+  image:
+    repository: energizet/box
+    tag: "0.0.1"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30002
+  volumeMounts:
+    wwwroot:
+      hostPath: /home/user/box/wwwroot
+    db:
+      hostPath: /home/user/box/db
+
+energizetHistory:
+  image:
+    repository: energizet/history
+    tag: "0.0.1"
+  service:
+    type: NodePort
+    port: 8080
+    nodePort: 30001
+  volumeMounts:
+    wwwroot:
+      hostPath: /home/user/history/wwwroot
+    store:
+      hostPath: /home/user/history/store

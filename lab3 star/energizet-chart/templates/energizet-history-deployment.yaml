@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energizet-history-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: energizet-history
+  template:
+    metadata:
+      labels:
+        app: energizet-history
+    spec:
+      containers:
+        - name: energizet-history
+          image: "{{ .Values.energizetHistory.image.repository }}:{{ .Values.energizetHistory.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.energizetHistory.service.port }}
+          volumeMounts:
+            - name: wwwroot
+              mountPath: /app/wwwroot
+            - name: store
+              mountPath: /app/store
+      volumes:
+        - name: wwwroot
+          hostPath:
+            path: {{ .Values.energizetHistory.volumeMounts.wwwroot.hostPath }}
+        - name: store
+          hostPath:
+            path: {{ .Values.energizetHistory.volumeMounts.store.hostPath }}

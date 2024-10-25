@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energizet-box-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: energizet-box
+  template:
+    metadata:
+      labels:
+        app: energizet-box
+    spec:
+      containers:
+        - name: energizet-box
+          image: "{{ .Values.energizetBox.image.repository }}:{{ .Values.energizetBox.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.energizetBox.service.port }}
+          volumeMounts:
+            - name: wwwroot
+              mountPath: /app/wwwroot
+            - name: db
+              mountPath: /app/db
+      volumes:
+        - name: wwwroot
+          hostPath:
+            path: {{ .Values.energizetBox.volumeMounts.wwwroot.hostPath }}
+        - name: db
+          hostPath:
+            path: {{ .Values.energizetBox.volumeMounts.db.hostPath }}
