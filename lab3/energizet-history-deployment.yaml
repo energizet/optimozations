@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energizet-history-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: energizet-history
+  template:
+    metadata:
+      labels:
+        app: energizet-history
+    spec:
+      containers:
+        - name: energizet-history
+          image: energizet/history:0.0.1
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: wwwroot
+              mountPath: /app/wwwroot
+            - name: store
+              mountPath: /app/store
+      volumes:
+        - name: wwwroot
+          hostPath:
+            path: /home/user/history/wwwroot
+        - name: store
+          hostPath:
+            path: /home/user/history/store

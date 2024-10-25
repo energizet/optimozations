@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energizet-box-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: energizet-box
+  template:
+    metadata:
+      labels:
+        app: energizet-box
+    spec:
+      containers:
+        - name: energizet-box
+          image: energizet/box:0.0.1
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: wwwroot
+              mountPath: /app/wwwroot
+            - name: db
+              mountPath: /app/db
+      volumes:
+        - name: wwwroot
+          hostPath:
+            path: /home/user/box/wwwroot
+        - name: db
+          hostPath:
+            path: /home/user/box/db

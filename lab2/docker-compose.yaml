@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+
+  energizet-history:
+    image: energizet/history:0.0.1
+    container_name: energizet-history
+    restart: unless-stopped
+    ports:
+      - "8090:8080"
+    networks:
+      - app-network
+    volumes:
+      - ./history/wwwroot:/app/wwwroot
+      - ./history/store:/app/store
+
+  energizet-box:
+    image: energizet/box:0.0.1
+    container_name: energizet-box
+    restart: unless-stopped
+    ports:
+      - "8091:80"
+    networks:
+      - app-network
+    volumes:
+      - ./box/wwwroot:/app/wwwroot
+      - ./box/db:/app/db
+
+networks:
+  app-network:
+    driver: bridge
