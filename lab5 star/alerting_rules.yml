@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-server
+data:
+  alerting_rules.yml: |
+    groups:
+      - name: example-alerts
+        rules:
+          - alert: HighCPUUsage
+            expr: avg(rate(process_cpu_seconds_total[5m])) > 0.005
+            for: 1m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High CPU usage detected"
+              description: "CPU usage is above 50% for over 1 minute."
